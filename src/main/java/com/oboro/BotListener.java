@@ -1,7 +1,5 @@
 package com.oboro;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.jagrosh.jdautilities.command.impl.CommandClientImpl;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 
@@ -19,7 +17,6 @@ import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.hooks.EventListener;
-import utils.EmojiUtil;
 
 public class BotListener implements EventListener {
     private static final String SUCCESS_EMOJI = "\uD83D\uDE08";
