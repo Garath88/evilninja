@@ -21,7 +21,7 @@
         <dependency>
             <groupId>jda-commands</groupId>
             <artifactId>jda-commands</artifactId>
-            <version>1.0.5-SNAPSHOT</version>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
