@@ -12,12 +12,15 @@ import commands.RemoveRoleCommand;
 import commands.emoji.BanEmojiCommand;
 import commands.emoji.RemoveEmojiBanCommand;
 import commands.say.DMCommand;
-import commands.say.ReadDMHistory;
+import commands.say.ReadDMHistoryCommand;
 import commands.say.SayCommand;
+import commands.say.SayEditCommand;
+import commands.say.SayEditLastCommand;
 import commands.say.SetChanCommand;
 import commands.system.HelpCommand;
 import commands.system.PingCommand;
 import commands.system.ShutdownCommand;
+import commands.waifu.WaifuCommand;
 
 public class CommandList {
     private static final String BOT_NAME = "Oboro";
@@ -50,12 +53,15 @@ public class CommandList {
         commands.add(new RebootCommand());
         commands.add(new SetChanCommand(BOT_NAME));
         commands.add(new SayCommand(BOT_NAME));
+        commands.add(new SayEditCommand(BOT_NAME));
+        commands.add(new SayEditLastCommand(BOT_NAME));
         commands.add(new DMCommand(BOT_NAME));
-        commands.add(new ReadDMHistory(BOT_NAME));
+        commands.add(new ReadDMHistoryCommand(BOT_NAME));
         commands.add(new RemoveRoleCommand());
         commands.add(new BanEmojiCommand());
         commands.add(new RemoveEmojiBanCommand());
         commands.add(new QuoteCommand());
+        commands.add(new WaifuCommand(waiter));
     }
 
     public List<Command> getCommands() {

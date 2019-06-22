@@ -4,16 +4,11 @@ import com.jagrosh.jdautilities.command.impl.CommandClientImpl;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 
 import commands.emoji.BanEmojiCommand;
-import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageReaction;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.ReadyEvent;
-import net.dv8tion.jda.core.events.channel.text.TextChannelDeleteEvent;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
-import net.dv8tion.jda.core.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.hooks.EventListener;
@@ -30,24 +25,14 @@ public class BotListener implements EventListener {
 
     @Override
     public void onEvent(Event event) {
-        JDA jda = event.getJDA();
         if (event instanceof ReadyEvent) {
             client.setSuccess(SUCCESS_EMOJI);
-        } else if (event instanceof TextChannelDeleteEvent) {
-
-        } else if (event instanceof GuildMemberJoinEvent) {
-
         } else if (event instanceof MessageReceivedEvent) {
             MessageReceivedEvent messageRecievedEvent = (MessageReceivedEvent)event;
-
             handleUser(messageRecievedEvent.getAuthor(), messageRecievedEvent);
-        } else if (event instanceof MessageDeleteEvent) {
-
         } else if (event instanceof MessageReactionAddEvent) {
             MessageReactionAddEvent messageReactionAddEvent = (MessageReactionAddEvent)event;
             handleUser(messageReactionAddEvent.getUser(), messageReactionAddEvent.getReaction());
-        } else if (event instanceof GuildMemberLeaveEvent) {
-
         }
     }
 

@@ -22,13 +22,13 @@ public class BotImpl implements Bot {
     private CommandClientBuilder client = new CommandClientBuilder();
     private EventWaiter waiter = new EventWaiter();
 
-    public BotImpl() {
+    BotImpl() {
         setupParameters();
     }
 
     private void setupParameters() {
         // The default game is: playing Type [prefix]help
-        client.useDefaultGame();
+        client.setGame(Game.watching("You"));
 
         // sets the owner of the bot
         client.setOwnerId(Config.getOwnerId());
@@ -53,7 +53,7 @@ public class BotImpl implements Bot {
             .forEach(client::addCommands);
     }
 
-    public void start() {
+    void start() {
         // start getting a bot account set up
         try {
             init();
