@@ -8,7 +8,6 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.oboro.RebootCommand;
 
 import commands.QuoteCommand;
-import commands.RemoveRoleCommand;
 import commands.emoji.BanEmojiCommand;
 import commands.emoji.RemoveEmojiBanCommand;
 import commands.say.DMCommand;
@@ -57,7 +56,6 @@ public class CommandList {
         commands.add(new SayEditLastCommand(BOT_NAME));
         commands.add(new DMCommand(BOT_NAME));
         commands.add(new ReadDMHistoryCommand(BOT_NAME));
-        commands.add(new RemoveRoleCommand());
         commands.add(new BanEmojiCommand());
         commands.add(new RemoveEmojiBanCommand());
         commands.add(new QuoteCommand());

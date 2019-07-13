@@ -12,6 +12,8 @@ import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.hooks.EventListener;
+import tasks.AutoKickTask;
+import tasks.Task;
 
 public class BotListener implements EventListener {
     private static final String SUCCESS_EMOJI = "\uD83D\uDE08";
@@ -27,6 +29,7 @@ public class BotListener implements EventListener {
     public void onEvent(Event event) {
         if (event instanceof ReadyEvent) {
             client.setSuccess(SUCCESS_EMOJI);
+            startAutoKickCheckForNonMembers(event);
         } else if (event instanceof MessageReceivedEvent) {
             MessageReceivedEvent messageRecievedEvent = (MessageReceivedEvent)event;
             handleUser(messageRecievedEvent.getAuthor(), messageRecievedEvent);
@@ -34,6 +37,11 @@ public class BotListener implements EventListener {
             MessageReactionAddEvent messageReactionAddEvent = (MessageReactionAddEvent)event;
             handleUser(messageReactionAddEvent.getUser(), messageReactionAddEvent.getReaction());
         }
+    }
+
+    private void startAutoKickCheckForNonMembers(Event event) {
+        Task task = new AutoKickTask(24 * 60, 0, event.getJDA());
+        task.scheduleTask();
     }
 
     private void handleUser(User author, MessageReceivedEvent messageRecievedEvent) {
