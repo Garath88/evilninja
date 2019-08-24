@@ -4,7 +4,7 @@
 
 # Log file
 *.log
-/src/main/resources/logback.xml
+/logback.xml
 # BlueJ files
 *.ctxt
 
@@ -33,3 +33,5 @@ gen
 /src/main/resources/configuration/mariadb.txt
 target/
 
+/reference.conf
+/src/main/resources/reference.conf

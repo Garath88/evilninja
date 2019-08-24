@@ -2,6 +2,7 @@ package com.oboro;
 
 import com.jagrosh.jdautilities.command.impl.CommandClientImpl;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import com.oboro.actions.HandleImagesAction;
 
 import commands.emoji.BanEmojiCommand;
 import net.dv8tion.jda.core.entities.Message;
@@ -33,6 +34,7 @@ public class BotListener implements EventListener {
         } else if (event instanceof MessageReceivedEvent) {
             MessageReceivedEvent messageRecievedEvent = (MessageReceivedEvent)event;
             handleUser(messageRecievedEvent.getAuthor(), messageRecievedEvent);
+            HandleImagesAction.checkImage(messageRecievedEvent);
         } else if (event instanceof MessageReactionAddEvent) {
             MessageReactionAddEvent messageReactionAddEvent = (MessageReactionAddEvent)event;
             handleUser(messageReactionAddEvent.getUser(), messageReactionAddEvent.getReaction());

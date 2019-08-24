@@ -8,9 +8,10 @@ import org.slf4j.LoggerFactory;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.command.impl.CommandClientImpl;
+import com.jagrosh.jdautilities.commons.ConfigLoader;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.oboro.configuration.CommandList;
-import com.oboro.configuration.Config;
+import com.typesafe.config.Config;
 
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
@@ -19,6 +20,7 @@ import net.dv8tion.jda.core.entities.Game;
 
 public class BotImpl implements Bot {
     private static final Logger LOGGER = LoggerFactory.getLogger(BotImpl.class);
+    private static final Config CONFIG = ConfigLoader.getConfig();
     private CommandClientBuilder client = new CommandClientBuilder();
     private EventWaiter waiter = new EventWaiter();
 
@@ -31,15 +33,16 @@ public class BotImpl implements Bot {
         client.setGame(Game.watching("You"));
 
         // sets the owner of the bot
-        client.setOwnerId(Config.getOwnerId());
+        client.setOwnerId(CONFIG.getString("ownerId"));
 
         // sets emojis used throughout the bot on successes, warnings, and failures
         client.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26");
 
         // sets the bot prefix
-        client.setPrefix(Config.PREFIX);
+        client.setPrefix("-");
 
         client.useHelpBuilder(true);
+        client.setWaiter(waiter);
     }
 
     @Override
@@ -66,15 +69,15 @@ public class BotImpl implements Bot {
         CommandClient bot = client.build();
         new JDABuilder(AccountType.BOT)
             // set the token
-            .setToken(Config.getToken())
+            .setToken(CONFIG.getString("token"))
 
             // set the game for when the bot is loading
             .setStatus(OnlineStatus.DO_NOT_DISTURB)
             .setGame(Game.playing("loading..."))
 
             // add the listeners
-            .addEventListener(waiter)
             .addEventListener(bot)
+            .addEventListener(waiter)
             .addEventListener(new BotListener((CommandClientImpl)bot, waiter))
             .build();
     }
