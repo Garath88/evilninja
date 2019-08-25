@@ -65,7 +65,8 @@ public final class HandleImagesAction {
     }
 
     private static boolean isLowResImage(Attachment attachment) {
-        return attachment.getHeight() < 500 || attachment.getWidth() < 500;
+        return !attachment.getFileName().endsWith(".gif")
+            && attachment.getHeight() < 500 || attachment.getWidth() < 500;
     }
 
     private static boolean isSampled(Attachment attachment) {
