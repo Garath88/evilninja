@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ public final class HandleImagesAction {
         + "- Find the actual source image before posting.";
     private static final String ANT_EMOJI = "\uD83D\uDC1C";
     private static final String MAGNIFIER_EMOJI = "🔍";
+    private static final Pattern IMAGE_PATTERN = Pattern.compile("[^\\s]+(\\.(?i)(jpg|jpeg|png))$");
 
     private HandleImagesAction() {
     }
@@ -65,8 +67,12 @@ public final class HandleImagesAction {
     }
 
     private static boolean isLowResImage(Attachment attachment) {
-        return !attachment.getFileName().endsWith(".gif")
+        return isImage(attachment.getFileName())
             && attachment.getHeight() < 500 || attachment.getWidth() < 500;
+    }
+
+    private static boolean isImage(String fileName) {
+        return IMAGE_PATTERN.matcher(fileName).matches();
     }
 
     private static boolean isSampled(Attachment attachment) {
