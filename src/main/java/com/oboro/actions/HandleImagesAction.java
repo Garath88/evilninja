@@ -35,7 +35,7 @@ public final class HandleImagesAction {
         + "- Find the actual source image before posting.";
     private static final String ANT_EMOJI = "\uD83D\uDC1C";
     private static final String MAGNIFIER_EMOJI = "🔍";
-    private static final Pattern IMAGE_PATTERN = Pattern.compile("[^\\s]+(\\.(?i)(jpg|jpeg|png))$");
+    private static final Pattern STILL_IMAGE_PATTERN = Pattern.compile("[^\\s]+(\\.(?i)(jpg|jpeg|png))$");
 
     private HandleImagesAction() {
     }
@@ -67,12 +67,12 @@ public final class HandleImagesAction {
     }
 
     private static boolean isLowResImage(Attachment attachment) {
-        return isImage(attachment.getFileName())
+        return isStillImage(attachment.getFileName())
             && attachment.getHeight() < 500 || attachment.getWidth() < 500;
     }
 
-    private static boolean isImage(String fileName) {
-        return IMAGE_PATTERN.matcher(fileName).matches();
+    private static boolean isStillImage(String fileName) {
+        return STILL_IMAGE_PATTERN.matcher(fileName).matches();
     }
 
     private static boolean isSampled(Attachment attachment) {
