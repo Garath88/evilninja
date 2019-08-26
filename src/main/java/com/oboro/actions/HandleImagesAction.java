@@ -14,7 +14,6 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Message.Attachment;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import utils.PrivateChannelWrapper;
 
 public final class HandleImagesAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(HandleImagesAction.class);
@@ -68,7 +67,7 @@ public final class HandleImagesAction {
 
     private static boolean isLowResImage(Attachment attachment) {
         return isStillImage(attachment.getFileName())
-            && attachment.getHeight() < 500 || attachment.getWidth() < 500;
+            && (attachment.getHeight() < 500 || attachment.getWidth() < 500);
     }
 
     private static boolean isStillImage(String fileName) {
@@ -80,7 +79,7 @@ public final class HandleImagesAction {
     }
 
     private static void sendLowResImageResponse(Attachment image, MessageReceivedEvent event) {
-        event.getAuthor().openPrivateChannel().queue(PrivateChannelWrapper.userIsInGuild(pc ->
+        event.getAuthor().openPrivateChannel().queue(pc ->
         {
             String user = event.getAuthor().getAsTag();
             if (!lowResUsers.containsKey(user)) {
@@ -96,11 +95,11 @@ public final class HandleImagesAction {
                 }
                 sendAttachmentToChannelAndAddReaction(Collections.singletonList(image), pc, ANT_EMOJI);
             }
-        }));
+        });
     }
 
     private static void sendSampledImageResponse(Attachment image, MessageReceivedEvent event) {
-        event.getAuthor().openPrivateChannel().queue(PrivateChannelWrapper.userIsInGuild(pc ->
+        event.getAuthor().openPrivateChannel().queue(pc ->
         {
             String user = event.getAuthor().getAsTag();
             if (!sampleUsers.containsKey(user)) {
@@ -116,7 +115,7 @@ public final class HandleImagesAction {
                 }
                 sendAttachmentToChannelAndAddReaction(Collections.singletonList(image), pc, MAGNIFIER_EMOJI);
             }
-        }));
+        });
     }
 
     private static void sendAttachmentToChannelAndAddReaction(List<Attachment> attachments, MessageChannel channel, String imageReaction) {
