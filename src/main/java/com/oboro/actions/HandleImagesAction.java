@@ -66,8 +66,11 @@ public final class HandleImagesAction {
     }
 
     private static boolean isLowResImage(Attachment attachment) {
-        return isStillImage(attachment.getFileName())
-            && (attachment.getHeight() < 500 || attachment.getWidth() < 500);
+        if (isStillImage(attachment.getFileName())
+            && (attachment.getHeight() < 500 || attachment.getWidth() < 500)) {
+            return attachment.getHeight() < 1000 && attachment.getWidth() < 1000;
+        }
+        return false;
     }
 
     private static boolean isStillImage(String fileName) {
