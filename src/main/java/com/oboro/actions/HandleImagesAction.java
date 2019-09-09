@@ -19,19 +19,11 @@ public final class HandleImagesAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(HandleImagesAction.class);
     private static final long TIME_TO_LIVE_MS = 10000;
     private static SelfExpiringMap<String, String> lowResUsers = new SelfExpiringHashMap<>(TIME_TO_LIVE_MS);
-    private static SelfExpiringMap<String, String> sampleUsers = new SelfExpiringHashMap<>(TIME_TO_LIVE_MS);
     private static Message latestLowResMessage = null;
-    private static Message latestSampledMessage = null;
     private static final String LOW_RES_SINGLE_IMAGE_MSG = "- You stupid fucking imbecile are you blind?! This picture is made for ants! :ant:\n"
         + "- Remove this shitty ass picture at once, worm!";
     private static final String LOW_RES_MULTIPLE_IMAGE_MSG = "- You stupid fucking imbecile are you blind?! These pictures are made for ants! :ant:\n"
         + "- Remove these shitty ass pictures at once, worm!";
-    private static final String SAMPLED_SINGLE_IMAGE_MSG = "- What the hell do you think you are doing?\n"
-        + "- Are you an invalid? Read the filename THIS IS A SAMPLED IMAGE you stupid mongrel! :mag:\n"
-        + "- Find the actual source image before posting.";
-    private static final String SAMPLED_MULTIPLE_IMAGE_MSG = "- What the hell do you think you are doing?\n"
-        + "- Are you an invalid? Read the filename THESE ARE SAMPLED IMAGES you stupid mongrel! :mag:\n"
-        + "- Find the actual source image before posting.";
     private static final String ANT_EMOJI = "\uD83D\uDC1C";
     private static final String MAGNIFIER_EMOJI = "🔍";
     private static final Pattern STILL_IMAGE_PATTERN = Pattern.compile("[^\\s]+(\\.(?i)(jpg|jpeg|png))$");
@@ -55,10 +47,7 @@ public final class HandleImagesAction {
                     Optional<Attachment> sampledImage = attachments.stream()
                         .filter(HandleImagesAction::isSampled)
                         .findFirst();
-                    sampledImage.ifPresent(attachment -> {
-                        sendSampledImageResponse(attachment, event);
-                        message.addReaction(MAGNIFIER_EMOJI).queue();
-                    });
+                    sampledImage.ifPresent(attachment -> message.addReaction(MAGNIFIER_EMOJI).queue());
 
                 }
             }
@@ -66,11 +55,8 @@ public final class HandleImagesAction {
     }
 
     private static boolean isLowResImage(Attachment attachment) {
-        if (isStillImage(attachment.getFileName())
-            && (attachment.getHeight() < 500 || attachment.getWidth() < 500)) {
-            return attachment.getHeight() < 1000 && attachment.getWidth() < 1000;
-        }
-        return false;
+        return isStillImage(attachment.getFileName())
+            && (attachment.getHeight() + attachment.getWidth()) < 1000;
     }
 
     private static boolean isStillImage(String fileName) {
@@ -97,26 +83,6 @@ public final class HandleImagesAction {
                     latestLowResMessage.editMessage(LOW_RES_MULTIPLE_IMAGE_MSG).queue();
                 }
                 sendAttachmentToChannelAndAddReaction(Collections.singletonList(image), pc, ANT_EMOJI);
-            }
-        });
-    }
-
-    private static void sendSampledImageResponse(Attachment image, MessageReceivedEvent event) {
-        event.getAuthor().openPrivateChannel().queue(pc ->
-        {
-            String user = event.getAuthor().getAsTag();
-            if (!sampleUsers.containsKey(user)) {
-                sampleUsers.put(event.getAuthor().getAsTag(), "", TIME_TO_LIVE_MS);
-                pc.sendMessage(SAMPLED_SINGLE_IMAGE_MSG).queue(success -> {
-                    latestSampledMessage = success;
-                    sendAttachmentToChannelAndAddReaction(Collections.singletonList(image), pc, MAGNIFIER_EMOJI);
-                }, fail -> {
-                });
-            } else {
-                if (latestSampledMessage != null) {
-                    latestSampledMessage.editMessage(SAMPLED_MULTIPLE_IMAGE_MSG).queue();
-                }
-                sendAttachmentToChannelAndAddReaction(Collections.singletonList(image), pc, MAGNIFIER_EMOJI);
             }
         });
     }
