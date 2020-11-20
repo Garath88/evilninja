@@ -1,6 +1,5 @@
 package com.oboro.actions;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -9,20 +8,20 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.dv8tion.jda.core.entities.Category;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.Message.Attachment;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Message.Attachment;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public final class HandleImagesAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(HandleImagesAction.class);
     private static final long TIME_TO_LIVE_MS = 10000;
     private static SelfExpiringMap<String, String> lowResUsers = new SelfExpiringHashMap<>(TIME_TO_LIVE_MS);
     private static Message latestLowResMessage = null;
-    private static final String LOW_RES_SINGLE_IMAGE_MSG = "- You stupid fucking imbecile are you blind?! This picture is made for ants! :ant:\n"
+    private static final String LOW_RES_SINGLE_IMAGE_MSG = "- You stupid fucking imbecile are you blind?! This picture is so fucking tiny it's literally made for ants! :ant:\n"
         + "- Remove this shitty ass picture at once, worm!";
-    private static final String LOW_RES_MULTIPLE_IMAGE_MSG = "- You stupid fucking imbecile are you blind?! These pictures are made for ants! :ant:\n"
+    private static final String LOW_RES_MULTIPLE_IMAGE_MSG = "- You stupid fucking imbecile are you blind?! These pictures look like thumbnails! :ant:\n"
         + "- Remove these shitty ass pictures at once, worm!";
     private static final String ANT_EMOJI = "\uD83D\uDC1C";
     private static final String MAGNIFIER_EMOJI = "🔍";
@@ -88,13 +87,14 @@ public final class HandleImagesAction {
     }
 
     private static void sendAttachmentToChannelAndAddReaction(List<Attachment> attachments, MessageChannel channel, String imageReaction) {
-        attachments.forEach(attachment -> {
-            try {
-                channel.sendFile(attachment.getInputStream(), attachment.getFileName())
-                    .queue(success -> success.addReaction(imageReaction).queue());
-            } catch (IOException e) {
-                LOGGER.error("Failed to send attachment to user in DM", e);
-            }
-        });
+        attachments.forEach(attachment -> attachment.retrieveInputStream().thenAccept(
+            data -> channel.sendFile(data, attachment.getFileName()).queue(
+                success -> success.addReaction(imageReaction).queue(),
+                fail -> {
+                }
+            )).exceptionally(e -> {
+            LOGGER.error("Failed to send attachment to user in DM", e);
+            return null;
+        }));
     }
 }
